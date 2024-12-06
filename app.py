@@ -47,19 +47,30 @@ def extract_instagram_data(url):
 
         handle = f"@{username}"  # Create the handle
 
+        # Debug print to check the parsed URL and username
+        print(f"Parsed URL: {url}")
+        print(f"Extracted Username: {username}")
+
         # Fetch HTML content
         response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        # Debug print to check soup content
+        print(f"HTML Content Fetched: {soup.prettify()[:500]}")  # Print first 500 characters of the HTML
+
         # Extract metadata
         meta_description_tag = soup.find('meta', attrs={'name': 'description'})
+        print(f"Meta Description Tag: {meta_description_tag}")  # Debug print
+
         if meta_description_tag:
             meta_description = meta_description_tag.get('content', '')
         else:
             raise ValueError("Meta description not found")
 
         username_meta_tag = soup.find('meta', attrs={'property': 'og:title'})
+        print(f"Username Meta Tag: {username_meta_tag}")  # Debug print
+
         if username_meta_tag:
             username_meta = username_meta_tag.get('content', '')
             username = username_meta.split("•")[0].strip()
@@ -85,6 +96,7 @@ def extract_instagram_data(url):
             'network': 'IG'
         }
     except Exception as e:
+        print(f"Error: {e}")  # Debug print for the error
         return {"error": str(e)}
 
 def extract_tiktok_profile_data(url):
