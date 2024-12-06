@@ -53,9 +53,18 @@ def extract_instagram_data(url):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Extract metadata
-        meta_description = soup.find('meta', attrs={'name': 'description'})['content']
-        username_meta = soup.find('meta', attrs={'property': 'og:title'})['content']
-        username = username_meta.split("•")[0].strip()
+        meta_description_tag = soup.find('meta', attrs={'name': 'description'})
+        if meta_description_tag:
+            meta_description = meta_description_tag.get('content', '')
+        else:
+            raise ValueError("Meta description not found")
+
+        username_meta_tag = soup.find('meta', attrs={'property': 'og:title'})
+        if username_meta_tag:
+            username_meta = username_meta_tag.get('content', '')
+            username = username_meta.split("•")[0].strip()
+        else:
+            raise ValueError("Username meta tag not found")
 
         # Extract and convert follower count
         follower_data = meta_description.split('Followers,')[0].strip()
