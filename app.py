@@ -119,32 +119,15 @@ st.write("El sistema creará un nuevo lead en Odoo, **si no se ha enviado antes*
 
 url_input = st.text_input("URL del perfil (ejemplo: https://www.instagram.com/joedoe o https://www.tiktok.com/@joedoe)")
 
-if 'followers_range' not in st.session_state:
-    st.session_state.followers_range = None
-
-st.write("Seleccione el rango de seguidores:")
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    if st.button("Menos de 30,000"):
-        st.session_state.followers_range = "Menos de 30,000"
-with col2:
-    if st.button("30,001 a 50,000"):
-        st.session_state.followers_range = "30,001 a 50,000"
-with col3:
-    if st.button("50,001 a 100,000"):
-        st.session_state.followers_range = "50,001 a 100,000"
-with col4:
-    if st.button("Más de 100,000"):
-        st.session_state.followers_range = "Más de 100,000"
-
-if st.session_state.followers_range:
-    st.write(f"Rango seleccionado: {st.session_state.followers_range}")
+followers_range = st.radio(
+    "Seleccione el rango de seguidores:",
+    ["Menos de 30,000", "30,001 a 50,000", "50,001 a 100,000", "Más de 100,000"]
+)
 
 if st.button("Enviar"):
     if not url_input.strip():
         st.warning("Por favor ingrese una URL.")
-    elif not st.session_state.followers_range:
+    elif not followers_range:
         st.warning("Por favor seleccione un rango de seguidores.")
     else:
         username, network = extract_username_and_network(url_input.strip())
@@ -158,7 +141,7 @@ if st.button("Enviar"):
         if existing:
             st.warning(f"Este perfil ({username} - {network}) ya fue enviado anteriormente.")
         else:
-            tag_ids = get_tag_ids_for_followers_range(st.session_state.followers_range)
+            tag_ids = get_tag_ids_for_followers_range(followers_range)
             lead_id = create_lead_in_odoo(username, network, url_input.strip(), tag_ids)
             if lead_id:
                 c.execute("INSERT INTO submissions (username, network) VALUES (?, ?)", (username, network))
