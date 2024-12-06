@@ -1,0 +1,15 @@
+# Ignore the virtual environment
+venv_goldmine/
+
+# Ignore environment variables
+.env
+
+# Ignore unnecessary files
+*.pyc
+__pycache__/
+*.log
+.DS_Store
+
+# Ignore Jupyter Notebook checkpoints and files
+.ipynb_checkpoints/
+*.ipynb
